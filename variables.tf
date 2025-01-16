@@ -28,6 +28,7 @@ variable "nodegroups" {
     count        = number
     role         = string
     public       = bool #if public, then floating IP will be assigned
+    user_data    = optional(string)
     #    tags                  = optional(map(string), {})
   }))
   default = {}
