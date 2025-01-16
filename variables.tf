@@ -59,6 +59,7 @@ variable "ingresses" {
   type = map(object({
     nodegroups    = list(string) # which nodegroups should get attached to the ingress
     network_name  = string
+    public        = bool
     listeners     = map(object({
       protocol      = string
       protocol_port = number
