@@ -35,7 +35,6 @@ resource "openstack_networking_subnet_v2" "subnet" {
   tags       = concat([var.name, each.key], var.extra_tags)
 }
 
-
 resource "openstack_networking_router_v2" "router" {
   for_each       = local.network_subnets_map
   name           = "${each.key}-router"
