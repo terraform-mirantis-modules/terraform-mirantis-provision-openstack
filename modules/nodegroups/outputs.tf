@@ -1,3 +1,4 @@
 output "nodes" {
-  value = openstack_compute_instance_v2.instance
+  value = local.nodes_with_fips
+  sensitive = false
 }

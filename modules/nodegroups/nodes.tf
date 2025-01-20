@@ -34,3 +34,7 @@ resource "openstack_networking_floatingip_v2" "instance_fip" {
   port_id = data.openstack_networking_port_v2.instance_port[count.index].id
   tags    = var.tags
 }
+
+locals {
+  nodes_with_fips = [for instance in openstack_compute_instance_v2.instance : merge(instance, {"floating_ip" : openstack_networking_floatingip_v2.instance_fip[index(openstack_compute_instance_v2.instance, instance)].address})]
+}
