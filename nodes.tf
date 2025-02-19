@@ -14,6 +14,8 @@ module "nodegroups" {
   security_groups = [for k, v in var.securitygroups : "${var.name}-${k}" if contains(v.nodegroups, each.key)]
   tags            = concat([var.name, each.key], var.extra_tags)
   user_data       = each.value.user_data
+
+  depends_on      = [ openstack_networking_subnet_v2.subnet ]
 }
 
 // locals created after node groups are provisioned.

@@ -64,6 +64,7 @@ variable "ingresses" {
     listeners     = map(object({
       protocol      = string
       protocol_port = number
+      target_port   = number
       lb_method     = string
     }))
   }))

@@ -6,6 +6,7 @@ locals {
         listener_key  = l_key
         protocol      = l.protocol
         protocol_port = l.protocol_port
+        target_port   = l.target_port
         lb_method     = l.lb_method
         nw_id         = openstack_networking_network_v2.network[ingr.network_name].id
         nodegroups    = ingr.nodegroups
@@ -63,7 +64,7 @@ resource "openstack_lb_members_v2" "lb_members" {
     content {
       name          = member.value["name"]
       address       = member.value["network"][0]["fixed_ip_v4"]
-      protocol_port = each.value.protocol_port
+      protocol_port = each.value.target_port
     }
   }
 }
