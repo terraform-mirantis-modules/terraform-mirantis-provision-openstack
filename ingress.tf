@@ -6,6 +6,7 @@ locals {
         listener_key  = l_key
         protocol      = l.protocol
         protocol_port = l.protocol_port
+        target_port   = l.target_port
         lb_method     = l.lb_method
         nw_id         = openstack_networking_network_v2.network[ingr.network_name].id
         nodegroups    = ingr.nodegroups
@@ -20,14 +21,19 @@ locals {
 
 resource "openstack_lb_loadbalancer_v2" "lb" {
   for_each       = var.ingresses
-  name           = each.key
+  name           = "${var.name}-${each.key}-lb"
   vip_network_id = openstack_networking_network_v2.network[each.value.network_name].id
 }
 
+resource "openstack_networking_floatingip_v2" "instance_fip" {
+  for_each       = {for k, v in var.ingresses: k => v if v.public == true}
+  pool    = var.external_network.fip_pool
+  port_id = openstack_lb_loadbalancer_v2.lb[each.key].vip_port_id
+}
 
 resource "openstack_lb_listener_v2" "lb_listener" {
   for_each        = local.lb_listeners_map
-  name            = "${each.key}-listener"
+  name            = "${each.key}-lb-listener"
   protocol        = each.value.protocol
   protocol_port   = each.value.protocol_port
   loadbalancer_id = openstack_lb_loadbalancer_v2.lb[each.value.ingress_key].id
@@ -58,7 +64,7 @@ resource "openstack_lb_members_v2" "lb_members" {
     content {
       name          = member.value["name"]
       address       = member.value["network"][0]["fixed_ip_v4"]
-      protocol_port = each.value.protocol_port
+      protocol_port = each.value.target_port
     }
   }
 }
@@ -66,5 +72,5 @@ resource "openstack_lb_members_v2" "lb_members" {
 // calculated after lb is created
 locals {
   // Add the lb for the lb to the ingress
-  ingresses_withlb = { for k, i in var.ingresses : k => merge(i, openstack_lb_loadbalancer_v2.lb[k]) }
+  ingresses_withlb = { for k, i in var.ingresses : k => merge(i, openstack_lb_loadbalancer_v2.lb[k], {"floating_ip": openstack_networking_floatingip_v2.instance_fip[k].address}) }
 }

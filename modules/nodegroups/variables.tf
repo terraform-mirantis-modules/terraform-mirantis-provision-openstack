@@ -51,3 +51,9 @@ variable "public" {
   description = "True if machines need to have FIPs assigned, false otherwise. If true, first attached ntwork's port will be used as port for FIP"
   type        = bool
 }
+
+variable "user_data" {
+  description = "Cloud-init userdata to be passed to the instance"
+  type        = string
+  default     = ""
+}
