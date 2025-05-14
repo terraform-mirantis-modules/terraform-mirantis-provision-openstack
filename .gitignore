@@ -1,0 +1,4 @@
+examples/*/.terraform/*
+examples/*/terraform.tfstate*
+examples/*/terraform.tfvars
+examples/*/ssh-keys*
