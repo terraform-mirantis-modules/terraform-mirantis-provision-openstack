@@ -1,0 +1,41 @@
+name = "k0rdent-cluster"
+
+networks = {
+  "internal-network" = {
+    nodegroups = ["controller", "worker"]
+    subnets = {
+      "subnet_1" = {
+        cidr    = "172.16.0.0/24"
+        private = false
+      }
+    }
+  }
+}
+
+nodegroups = {
+  "controller" = {
+    source_image = "ubuntu22.04"
+    keypair      = "rk-kp"
+    flavor       = "dev.mdb"
+    count        = 1
+    role         = "manager"
+    public       = true
+    user         = "mkex"
+  },
+  "worker" = {
+    source_image = "ubuntu22.04"
+    keypair      = "rk-kp"
+    flavor       = "dev.mdb"
+    count        = 1
+    role         = "worker"
+    public       = true
+    user         = "rocky"
+  }
+}
+
+external_network = {
+  id       = "bf6b85a1-39db-4582-b0d1-f4291dddb9ca"
+  fip_pool = "public"
+}
+
+auth_url = "https://keystone.mirantis.net/"
