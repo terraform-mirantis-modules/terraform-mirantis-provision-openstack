@@ -13,7 +13,7 @@ resource "openstack_compute_instance_v2" "instance" {
     }
   }
   tags = var.tags
-  user_data = var.user_data
+  user_data = "#cloud-config\nfqdn: ${var.name}-${count.index}\nhostname: ${var.name}-${count.index}\n${var.user_data}" 
 }
 
 data "openstack_networking_port_v2" "instance_port" {
@@ -36,5 +36,10 @@ resource "openstack_networking_floatingip_v2" "instance_fip" {
 }
 
 locals {
-  nodes_with_fips = [for instance in openstack_compute_instance_v2.instance : merge(instance, {"floating_ip" : openstack_networking_floatingip_v2.instance_fip[index(openstack_compute_instance_v2.instance, instance)].address})]
+  # When public=false, instance_fip has count=0; use null for floating_ip and avoid indexing.
+  nodes_with_fips = [
+    for i, instance in openstack_compute_instance_v2.instance : merge(instance, {
+      "floating_ip" = var.public ? openstack_networking_floatingip_v2.instance_fip[i].address : null
+    })
+  ]
 }
