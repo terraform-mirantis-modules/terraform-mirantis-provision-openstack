@@ -18,7 +18,7 @@ locals {
   # Indented YAML fragment for spec.hosts (under "  hosts:")
   hosts_yaml_raw    = replace(yamlencode(local.mke4_hosts), "/((?:^|\\n)[\\s-]*)\"([\\w.-]+)\":/", "$1$2:")
   hosts_yaml_indent = join("", ["    ", replace(local.hosts_yaml_raw, "\n", "\n    ")])
-  api_server_external_address = local.lb_ip != null ? "${local.lb_ip}:443" : "REPLACE_WITH_LOAD_BALANCER_IP_OR_HOSTNAME:443"
+  api_server_external_address = local.lb_ip != null ? local.lb_ip : "REPLACE_WITH_LOAD_BALANCER_IP_OR_HOSTNAME"
   api_server_sans             = local.lb_ip != null ? [local.lb_ip] : []
   # Full MKE 4k config (same structure as mkectl init) with our hosts and apiServer
   mkectl_config_full = templatefile("${path.module}/mke4-config.yaml.tpl", {
@@ -26,6 +26,7 @@ locals {
     hosts_yaml                  = local.hosts_yaml_indent
     api_server_external_address = local.api_server_external_address
     api_server_sans             = local.api_server_sans
+    is_bootc_based              = var.is_bootc_based
   })
 }
 

@@ -1,5 +1,5 @@
 module "key" {
-  source = "../modules/key"
+  source = "../../modules/key"
   name = "${var.name}-kp"
 }
 
