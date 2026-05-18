@@ -35,6 +35,12 @@ ${hosts_yaml}
 %{for s in api_server_sans~}
     - ${s}
 %{endfor~}
+%{if is_bootc_based~}
+    ucpauthz:
+      disabled: false
+      exemptUsers:
+      - system:serviceaccount:system-upgrade:system-upgrade
+%{endif~}
   network:
     providers:
       - enabled: true

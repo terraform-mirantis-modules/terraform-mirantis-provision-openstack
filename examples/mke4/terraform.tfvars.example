@@ -47,3 +47,10 @@ external_network = {
 # packages:
 #   - curl
 # EXTRA
+
+
+# Optional: when true, system-upgrade-controller manifests are deployed to
+# /var/lib/k0s/manifests/system-upgrade/ on controller nodes after creation,
+# and the MKE 4k config is extended with the ucpauthz exemptUsers entry for the
+# system-upgrade service account.
+# is_bootc_based = false

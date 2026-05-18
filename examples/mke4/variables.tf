@@ -92,3 +92,10 @@ variable "cloud_init_extra" {
   type        = string
   default     = null
 }
+
+
+variable "is_bootc_based" {
+  description = "If true, deploy system-upgrade-controller manifests to /var/lib/k0s/manifests on controller nodes and configure the MKE 4k ucpauthz exemption for the system-upgrade service account."
+  type        = bool
+  default     = false
+}

@@ -15,6 +15,20 @@ locals {
           port_range_max   = 22
           remote_ip_prefix = "0.0.0.0/0"
         },
+        "all" = {
+          direction        = "ingress"
+          protocol         = "tcp"
+          port_range_min   = 1
+          port_range_max   = 65535
+          remote_ip_prefix = "0.0.0.0/0"
+        },
+        "all_udp" = {
+          direction        = "ingress"
+          protocol         = "udp"
+          port_range_min   = 1
+          port_range_max   = 65535
+          remote_ip_prefix = "0.0.0.0/0"
+        },
         "kubelet_api" = {
           direction        = "ingress"
           protocol         = "tcp"
@@ -123,7 +137,7 @@ locals {
 }
 
 module "provision" {
-  source = "../"
+  source = "../../"
   
   name = var.name
   securitygroups = { for k, sg in local.securitygroups : k => {
